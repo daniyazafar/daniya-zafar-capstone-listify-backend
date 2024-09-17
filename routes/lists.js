@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
     .get('/', listController.getAllLists)
+    .get('/:id', listController.getListById)
     .post('/', listController.postNewList)
 
 export default router;
