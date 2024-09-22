@@ -118,11 +118,7 @@ const categorizeListItems = async (req, res) => {
         const { id } = req.params;
         const items = await knex("items_of_list").where({ list_id: id });
         const item = items.map(item => item.item);
-
         const categorizedItems = await categorizeItems(item);
-        console.log("Hello");
-        console.log(categorizedItems);
-
         res.status(200).json(JSON.parse(categorizedItems));
         return item;
     } catch (error) {
