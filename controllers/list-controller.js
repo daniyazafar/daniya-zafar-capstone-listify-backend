@@ -31,15 +31,31 @@ const getListById = async (req, res) => {
         }
         res.status(200).json(listById);
     } catch (error) {
-        res.status(500).json({ error: "Failed to get list" });
+        console.log("Failed to get list by id", error);
+        res.status(500).json({ error: "Failed to get list by id" });
     }
 };
+
+const deleteListById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await knex('lists').where({ id }).delete();
+        if (response) {
+            res.status(200).json({ message: "List deleted successfully" });
+        } else {
+            res.status(404).json({ message: "List not found" });
+        }
+    } catch (error) {
+        console.error("Failed to delete list", error)
+        res.status(500).json({ message: "An error occurred while deleting the list" });
+    }
+}
 
 const postItems = async (req, res) => {
     try {
         const { items } = req.body;
         const { id } = req.params;
-
+        
         const currentItems = await knex('items_of_list')
             .where({ list_id: id })
             .pluck('item');
@@ -63,6 +79,7 @@ const postItems = async (req, res) => {
         }
         res.status(201).json({ message: `${newItems.length} new items added to list with id ${id}` });
     } catch (error) {
+        console.log("Failed to add items to the list", error);
         res.status(500).json({ error: 'Failed to add items to the list', error });
     }
 
@@ -74,6 +91,7 @@ const getItemsbyListId = async (req, res) => {
         const response = await knex('items_of_list').where({ list_id: id });
         res.status(200).json(response);
     } catch (error) {
+        console.log("Failed to get items of list", error);
         res.status(500).json({ error: 'Failed to get items of list', error });
     }
 };
@@ -89,6 +107,7 @@ const updateItemCheckmark = async (req, res) => {
         
         res.status(200).json({ message: 'Checkmark updated' });
     } catch (error) {
+        console.log("Failed to update chekmark", error);
         res.status(500).json({ error: 'Failed to update checkmark', error });
     }
 
@@ -107,8 +126,9 @@ const categorizeListItems = async (req, res) => {
         res.status(200).json(JSON.parse(categorizedItems));
         return item;
     } catch (error) {
-        console.log("Failed to get item by ID", error)
+        console.log("Failed to get item by ID", error);
+        res.status(500).json({ message: "An error occurred while trying to categorize list items" });
     }
 }
 
-export { getAllLists, getListById, postNewList, postItems, getItemsbyListId, updateItemCheckmark, categorizeListItems};
+export { getAllLists, getListById, postNewList, deleteListById, postItems, getItemsbyListId, updateItemCheckmark, categorizeListItems};

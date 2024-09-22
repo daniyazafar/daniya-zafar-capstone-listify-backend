@@ -8,6 +8,7 @@ router
     .post('/', listController.postNewList)
     
     .get('/:id', listController.getListById)
+    .delete('/:id', listController.deleteListById)
     .post('/:id/items', listController.postItems)
 
     .get('/:id/items', listController.getItemsbyListId)
